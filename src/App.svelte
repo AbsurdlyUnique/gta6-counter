@@ -1,17 +1,42 @@
 <script>
-  import Youtube from "svelte-youtube-embed";
+  import ImageViewer from './lib/ImageViewer.svelte';
 
-  // Svelte 5 Runes for reactivity
-  let targetDate = new Date("2026-05-26T00:00:00Z"); // Updated: May 26, 2026, UTC
+  let selectedImage = $state({
+    src: '',
+    alt: '',
+    isOpen: false
+  });
+
+  function openImageViewer(src, alt) {
+    selectedImage = {
+      src,
+      alt,
+      isOpen: true
+    };
+  }
+
+  /**
+   * Countdown Timer Configuration
+   * Target date is set to GTA VI's announced release date
+   * Using Svelte 5 Runes ($state and $derived) for reactive state management
+   */
+  let targetDate = new Date("2026-05-26T00:00:00Z");
   let now = $state(new Date());
   let timeRemaining = $derived(calculateTimeRemaining(targetDate, now));
 
+  // Update current time every second
   setInterval(() => {
     now = new Date();
   }, 1000);
 
+  /**
+   * Calculate time remaining until the target date
+   * @param {Date} endDate - The target date to count down to
+   * @param {Date} currentDate - The current date to calculate from
+   * @returns {Object} Object containing days, hours, minutes, and seconds remaining
+   */
   function calculateTimeRemaining(endDate, currentDate) {
-    const total = Date.parse(endDate) - Date.parse(currentDate);
+    const total = endDate.getTime() - currentDate.getTime();
     const seconds = Math.floor((total / 1000) % 60);
     const minutes = Math.floor((total / 1000 / 60) % 60);
     const hours = Math.floor((total / (1000 * 60 * 60)) % 24);
@@ -26,9 +51,29 @@
     };
   }
 
-  const headerLogoUrl = "https://www.rockstargames.com/VI/_next/static/media/VIstack.fe9b0515.svg";
-  const gta6KeyArtUrl = "/images/Jason_and_Lucia_02_With_Logos_landscape.jpg";
+
+  /**
+   * Asset Configuration
+   * Contains paths to various images used throughout the site
+   */
+  const gta6KeyArtUrl = '/images/Jason_and_Lucia_02_With_Logos_landscape.jpg';
   const gta6TextLogoUrl = "https://www.rockstargames.com/VI/_next/image?url=%2FVI%2F_next%2Fstatic%2Fmedia%2FheroKeyArt.0338a8a4.png&w=1280";
+
+  /**
+   * Footer Character Images
+   * Collection of transparent character silhouettes for the footer
+   * One will be randomly selected to display above the footer
+   */
+  const footerImages = [
+    '/images/Hero_FG.png',
+    '/images/Hero_FG(1).png',
+    '/images/Hero_FG(2).png',
+    '/images/Hero_FG(3).png',
+    '/images/Hero_FG(4).png',
+    '/images/Hero_FG(5).png'
+  ];
+
+  const randomFooterImage = footerImages[Math.floor(Math.random() * footerImages.length)];
 
   // SVG strings for platform logos
   const ps5LogoSvg = `
@@ -56,6 +101,155 @@
   `;
 
   const bentoItems = [
+
+    // Lucia's Section
+    {
+      id: 'lucia-main',
+      type: 'character',
+      characterName: 'Lucia Caminos',
+      tagline: "Fresh out of prison and ready to change the odds in her favor.",
+      description: "Life has been coming at her swinging ever since. Fighting for her family landed her in the Leonida Penitentiary. Sheer luck got her out. Lucia's learned her lesson — only smart moves from here.",
+      imageUrl: '/images/Lucia_Caminos_01.jpeg',
+      colSpan: 'md:col-span-2',
+      rowSpan: 'md:row-span-2',
+    },
+    {
+      id: 'lucia-quote1',
+      type: 'character',
+      characterName: 'Lucia Caminos',
+      tagline: "The only thing that matters is who you know and what you got.",
+      imageUrl: '/images/Lucia_Caminos_02.jpeg',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'lucia-action1',
+      type: 'image',
+      imageUrl: '/images/Lucia_Caminos_03.jpeg',
+      alt: 'Lucia in action',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'lucia-quote2',
+      type: 'character',
+      characterName: 'Lucia Caminos',
+      tagline: "A life with Jason could be her way out.",
+      imageUrl: '/images/Lucia_Caminos_04.jpeg',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'lucia-action2',
+      type: 'image',
+      imageUrl: '/images/Lucia_Caminos_05.jpeg',
+      alt: 'Lucia ready for action',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'lucia-story',
+      type: 'character',
+      characterName: 'Lucia Caminos',
+      tagline: "More than anything, Lucia wants the good life her mom has dreamed of since their days in Liberty City.",
+      imageUrl: '/images/Lucia_Caminos_06.jpeg',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+
+    // Jason's Section
+    {
+      id: 'jason-main',
+      type: 'character',
+      characterName: 'Jason Duval',
+      tagline: "Jason wants an easy life, but things just keep getting harder.",
+      description: "Jason grew up around grifters and crooks. After a stint in the Army trying to shake off his troubled teens, he found himself in the Keys doing what he knows best, working for local drug runners. It might be time to try something new.",
+      imageUrl: '/images/Jason_Duval_01.jpeg',
+      colSpan: 'md:col-span-2',
+      rowSpan: 'md:row-span-2',
+    },
+    {
+      id: 'jason-quote1',
+      type: 'character',
+      characterName: 'Jason Duval',
+      tagline: "If anything happens, I'm right behind you.",
+      imageUrl: '/images/Jason_Duval_02.jpeg',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'jason-action1',
+      type: 'image',
+      imageUrl: '/images/Jason_Duval_03.jpeg',
+      alt: 'Jason in action',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'jason-quote2',
+      type: 'character',
+      characterName: 'Jason Duval',
+      tagline: "Another day in paradise, right?",
+      imageUrl: '/images/Jason_Duval_04.jpeg',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'jason-action2',
+      type: 'image',
+      imageUrl: '/images/Jason_Duval_05.jpeg',
+      alt: 'Jason driving',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'jason-story',
+      type: 'character',
+      characterName: 'Jason Duval',
+      tagline: "Meeting Lucia could be the best or worst thing to ever happen to him.",
+      imageUrl: '/images/Jason_Duval_06.jpeg',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+
+    // Location & Story Context
+    {
+      id: 'vice-city-main',
+      type: 'character',
+      characterName: 'Only in Leonida',
+      tagline: "When the sun fades and the neon glows, everyone has something to gain — and more to lose.",
+      imageUrl: '/images/Hero_BG(1).jpeg',
+      colSpan: 'md:col-span-2',
+      rowSpan: 'md:row-span-2',
+    },
+    {
+      id: 'vice-city-night',
+      type: 'image',
+      imageUrl: '/images/Hero_BG(2).jpeg',
+      alt: 'Vice City at night',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'vice-city-day',
+      type: 'image',
+      imageUrl: '/images/Hero_BG(3).jpeg',
+      alt: 'Vice City during day',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+
+    // Supporting Characters
+    {
+      id: 'cal-hampton',
+      type: 'character',
+      characterName: 'Cal Hampton',
+      tagline: "What if everything on the internet was true?",
+      description: "Jason's friend and a fellow associate of Brian's, Cal feels safest hanging at home, snooping on Coast Guard comms with a few beers and some private browser tabs open.",
+      imageUrl: '/images/Cal_Hampton_01.jpeg',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
     {
       id: 'trailer',
       type: 'trailer',
@@ -69,7 +263,7 @@
       type: 'character',
       characterName: 'Lucia',
       tagline: "A life with Jason could be her way out.",
-      imageUrl: 'https://www.rockstargames.com/VI/_next/image?url=%2FVI%2F_next%2Fstatic%2Fmedia%2FLucia_Caminos_04.76419a9d.jpg&w=1920&q=75',
+      imageUrl: '/images/Lucia_Caminos_03.jpeg',
       colSpan: 'md:col-span-1',
       rowSpan: 'md:row-span-1',
     },
@@ -77,24 +271,24 @@
       id: 'jason',
       type: 'character',
       characterName: 'Jason',
-      tagline: "Jason wants an easy life, but things just keep getting harder.",
-      imageUrl: 'https://www.rockstargames.com/VI/_next/image?url=%2FVI%2F_next%2Fstatic%2Fmedia%2FJason_Duval_02.c2f33c0d.jpg&w=1920&q=75',
+      tagline: "He's got a plan to reach the top.",
+      imageUrl: '/images/Jason_Duval_04.jpeg',
       colSpan: 'md:col-span-1',
       rowSpan: 'md:row-span-1',
     },
     {
       id: 'image-jason-driving',
       type: 'image',
-      imageUrl: '/images/Jason_Duval_01.jpeg', // Using local image
-      alt: 'Jason driving a car in Vice City',
+      imageUrl: '/images/Jason_Duval_05.jpeg',
+      alt: 'Jason driving a car',
       colSpan: 'md:col-span-1',
       rowSpan: 'md:row-span-1',
     },
     {
       id: 'image-lucia-posing',
       type: 'image',
-      imageUrl: '/images/Lucia_Caminos_01.jpeg', // Using local image
-      alt: 'Lucia posing',
+      imageUrl: '/images/Lucia_Caminos_05.jpeg',
+      alt: 'Lucia posing with a gun',
       colSpan: 'md:col-span-1',
       rowSpan: 'md:row-span-1',
     },
@@ -125,32 +319,74 @@
     {
       id: 'image-vice-city-skyline',
       type: 'image',
-      imageUrl: '/images/outro.jpeg', // Assuming this is the Vice City skyline
-      alt: 'Vice City skyline at sunset',
-      colSpan: 'md:col-span-3',
-      rowSpan: 'md:row-span-1', 
+      imageUrl: '/images/Hero_BG(1).jpeg',
+      alt: 'Vice City skyline',
+      colSpan: 'md:col-span-2',
+      rowSpan: 'md:row-span-2',
+    },
+    {
+      id: 'image-boobie-ike',
+      type: 'image',
+      imageUrl: '/images/Boobie_Ike_02.jpeg',
+      alt: 'Boobie Ike character art',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'image-brian-heder',
+      type: 'image',
+      imageUrl: '/images/Brian_Heder_02.jpeg',
+      alt: 'Brian Heder character art',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'image-real-dimez',
+      type: 'image',
+      imageUrl: '/images/Real_Dimez_02.jpeg',
+      alt: 'Real Dimez character art',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'image-hero-fg-1',
+      type: 'image',
+      imageUrl: '/images/Hero_FG(3).png',
+      alt: 'Hero Foreground Art 1',
+      colSpan: 'md:col-span-2',
+      rowSpan: 'md:row-span-1',
+    },
+    {
+      id: 'image-hero-fg-2',
+      type: 'image',
+      imageUrl: '/images/Hero_FG(4).png',
+      alt: 'Hero Foreground Art 2',
+      colSpan: 'md:col-span-1',
+      rowSpan: 'md:row-span-1',
     },
   ];
 
 </script>
 
+<!-- Main container for the entire application -->
 <div class="container">
+  <!-- Header with logo and disclaimer -->
   <header>
-    <img src={headerLogoUrl} alt="VI Logo" class="header-logo-img" />
-    <nav>
-      <div class="hamburger">
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    </nav>
+    <!-- Simple text logo -->
+    <span class="header-logo">VI</span>
+    <!-- Disclaimer about unofficial status -->
+    <div class="header-disclaimer">
+      This project is not affiliated with Rockstar Games - 
+      <a href="https://www.rockstargames.com/VI" target="_blank" rel="noopener noreferrer">visit their official GTA VI site here</a>
+    </div>
+    <!-- Spacer for three-column layout -->
+    <div class="header-spacer"></div>
   </header>
 
 <main>
     <section class="hero-section">
       <img src={gta6KeyArtUrl} alt="Grand Theft Auto VI Key Art" class="hero-key-art-background-img" />
       <div class="hero-content-overlay">
-        <img src={gta6TextLogoUrl} alt="Grand Theft Auto VI Logo" class="hero-text-logo-img" />
         <div class="release-date-text">
           COMING MAY 26 2026
         </div>
@@ -170,14 +406,11 @@
         <div class="platform-logo-container">
           <div class="platform-logo platform-ps5">
             {@html ps5LogoSvg}
-            <span class="platform-name">PlayStation 5</span>
           </div>
           <div class="platform-logo platform-xbox">
             {@html xboxLogoSvg}
-            <span class="platform-name">XBOX SERIES X|S</span>
           </div>
         </div>
-        <p class="release-notice">*Unofficial countdown. Official release date May 26, 2026.</p>
   </div>
 
       <div class="scroll-indicator">
@@ -186,18 +419,95 @@
     </section>
 
     <section class="bento-section">
-      <h2 class="bento-title">Media &amp; Features</h2>
+      <h2 class="bento-title">Characters &amp; Story</h2>
+
+
+      <!-- Lucia's Section -->
+      <h2 class="character-section-title">Lucia Caminos</h2>
       <div class="bento-grid">
-        {#each bentoItems as item (item.id)}
+        {#each bentoItems.filter(item => item.id.startsWith('lucia-')) as item (item.id)}
           <div class={`bento-item ${item.colSpan || ''} ${item.rowSpan || ''} item-type-${item.type}`}>
-            {#if item.type === 'trailer'}
-              <div class="bento-content trailer-content">
-                <h3>{item.title}</h3>
-                <div class="video-wrapper-bento">
-                  <Youtube id={item.videoId} />
+            {#if item.type === 'character'}
+              <button 
+                class="character-button"
+                onclick={() => openImageViewer(item.imageUrl, `${item.characterName} - ${item.tagline}`)}
+                aria-label={`View full size image of ${item.characterName}`}
+              >
+                <div class="bento-content character-content" style="background-image: url({item.imageUrl});">
+                  <div class="character-overlay">
+                    <h4>{item.characterName}</h4>
+                    <p>{item.tagline}</p>
+                    {#if item.description}
+                      <p class="description">{item.description}</p>
+                    {/if}
+                  </div>
                 </div>
+              </button>
+            {:else}
+              <div class="bento-content image-content">
+                <button 
+                  class="image-button"
+                  onclick={() => openImageViewer(item.imageUrl, item.alt || `${item.characterName} image`)}
+                  aria-label="View full size image"
+                >
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.alt || `${item.characterName} image`} 
+                    class="bento-img"
+                  />
+                </button>
               </div>
-            {:else if item.type === 'character'}
+            {/if}
+          </div>
+        {/each}
+      </div>
+
+      <!-- Jason's Section -->
+      <h2 class="character-section-title">Jason Duval</h2>
+      <div class="bento-grid">
+        {#each bentoItems.filter(item => item.id.startsWith('jason-')) as item (item.id)}
+          <div class={`bento-item ${item.colSpan || ''} ${item.rowSpan || ''} item-type-${item.type}`}>
+            {#if item.type === 'character'}
+              <button 
+                class="character-button"
+                onclick={() => openImageViewer(item.imageUrl, `${item.characterName} - ${item.tagline}`)}
+                aria-label={`View full size image of ${item.characterName}`}
+              >
+                <div class="bento-content character-content" style="background-image: url({item.imageUrl});">
+                  <div class="character-overlay">
+                    <h4>{item.characterName}</h4>
+                    <p>{item.tagline}</p>
+                    {#if item.description}
+                      <p class="description">{item.description}</p>
+                    {/if}
+                  </div>
+                </div>
+              </button>
+            {:else}
+              <div class="bento-content image-content">
+                <button 
+                  class="image-button"
+                  onclick={() => openImageViewer(item.imageUrl, item.alt || `${item.characterName} image`)}
+                  aria-label="View full size image"
+                >
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.alt || `${item.characterName} image`} 
+                    class="bento-img"
+                  />
+                </button>
+              </div>
+            {/if}
+          </div>
+        {/each}
+      </div>
+
+      <!-- Vice City Section -->
+      <h2 class="character-section-title">Vice City</h2>
+      <div class="bento-grid">
+        {#each bentoItems.filter(item => !item.id.startsWith('lucia-') && !item.id.startsWith('jason-') && item.type !== 'trailer') as item (item.id)}
+          <div class={`bento-item ${item.colSpan || ''} ${item.rowSpan || ''} item-type-${item.type}`}>
+            {#if item.type === 'character'}
               <div class="bento-content character-content" style="background-image: url({item.imageUrl});">
                 <div class="character-overlay">
                   <h4>{item.characterName}</h4>
@@ -206,7 +516,17 @@
               </div>
             {:else if item.type === 'image'}
               <div class="bento-content image-content">
-                <img src={item.imageUrl} alt={item.alt || 'GTA VI Image'} class="bento-img"/>
+                <button 
+                  class="image-button"
+                  onclick={() => openImageViewer(item.imageUrl, item.alt || 'GTA VI Image')}
+                  aria-label="View full size image"
+                >
+                  <img 
+                    src={item.imageUrl} 
+                    alt={item.alt || 'GTA VI Image'} 
+                    class="bento-img"
+                  />
+                </button>
               </div>
             {/if}
           </div>
@@ -216,30 +536,53 @@
 
 </main>
 
+  <div class="footer-character-container">
+    <img
+      src={randomFooterImage}
+      alt="Character Silhouette"
+      class="footer-character-image"
+    />
+  </div>
   <footer>
-    <p>&copy; {new Date().getFullYear()} Your Name/Project. Inspired by Rockstar Games. Not affiliated with Rockstar Games.</p>
-    <p>Visit the official site: <a href="https://www.rockstargames.com/VI" target="_blank" rel="noopener noreferrer">rockstargames.com/VI</a></p>
+    <div class="footer-content">
+      <p class="footer-text">All images and information are property of Rockstar Games. This is a fan project.</p>
+      <p class="footer-text">Visit the official GTA VI website at <a href="https://www.rockstargames.com/VI" target="_blank" rel="noopener noreferrer">rockstargames.com/VI</a></p>
+    </div>
   </footer>
+
+<ImageViewer 
+  src={selectedImage.src}
+  alt={selectedImage.alt}
+  bind:isOpen={selectedImage.isOpen}
+/>
 </div>
 
 <style>
+  /* Global theme variables for consistent styling */
   :root {
-    --gta-pink: #ff007a;
+    /* Brand colors */
+    --gta-pink: #ff1493;
     --gta-orange: #ff8c00;
     --gta-purple: #8000ff;
+    
+    /* UI colors */
     --text-color: #e0e0e0;
-    --bg-color: #0c0c0c; 
+    --bg-color: #0c0c0c;
+    
+    /* Layout */
     --container-padding: 20px;
-    --bento-gap: 1rem; /* Gap for bento grid */
+    --bento-gap: 1rem;
+    
+    /* Typography */
+    --font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
   }
 
-  body {
-    /* font-family: 'YourGTAFont', sans-serif; */
+  :global(body) {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
     background-color: var(--bg-color);
     color: var(--text-color);
-    margin:0;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    overflow-x: hidden;
   }
 
   .container {
@@ -249,45 +592,59 @@
   }
 
   header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
     align-items: center;
+    gap: clamp(20px, 4vw, 40px);
     padding: clamp(15px, 2vw, 20px) clamp(20px, 4vw, 40px);
     background-color: rgba(0,0,0,0.6);
     position: fixed;
     top: 0;
     left: 0;
-    width: calc(100% - 2 * clamp(20px, 4vw, 40px)); 
+    width: calc(100% - 2 * clamp(20px, 4vw, 40px));
     z-index: 1000;
     border-bottom: 1px solid rgba(255,255,255,0.1);
   }
 
-  .header-logo-img {
-    height: clamp(28px, 4vw, 40px); /* Adjust size as needed */
-    width: auto;
+  .header-logo {
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: bold;
+    color: white;
+    letter-spacing: 2px;
   }
 
-  .hamburger div {
-    width: 25px;
-    height: 3px;
-    background-color: #fff;
-    margin: 5px 0;
-    transition: 0.3s;
+  .header-disclaimer {
+    font-size: clamp(11px, 1.5vw, 13px);
+    color: #ccc;
+    text-align: center;
+    flex: 1;
   }
+
+  .header-disclaimer a {
+    color: var(--gta-pink);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .header-disclaimer a:hover {
+    text-decoration: underline;
+  }
+
+
 
   main {
     padding-top: 80px; 
   }
 
   .hero-section {
-    display: flex; /* Changed from flex to allow absolute positioning of overlay */
-    flex-direction: column; /* Keep column flow for scroll indicator */
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: flex-end; /* Align content overlay to bottom */
+    justify-content: flex-end;
     min-height: 100vh; 
     background-color: var(--bg-color);
     overflow: hidden;
-    position: relative; /* Crucial for absolute positioning of children */
+    position: relative;
   }
 
   .hero-key-art-background-img {
@@ -296,35 +653,36 @@
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: contain; /* Show entire image, letterbox if needed */
+    object-fit: contain;
     object-position: center center; 
-    z-index: 1; /* Behind the content overlay */
+    z-index: 1;
   }
   
   .hero-content-overlay {
-    position: relative; 
-    z-index: 2; 
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-end; /* Push GTA Text Logo, COMING, Countdown to bottom of this container */
+    justify-content: center;
     width: 100%;
-    padding: var(--container-padding) var(--container-padding) clamp(20px, 5vh, 40px) var(--container-padding); /* Reduced bottom padding */
+    padding: 0;
     box-sizing: border-box;
     text-align: center;
-    min-height: auto; /* Allow content to define height, or set a smaller min-height */
-    /* Ensure it doesn't overlap with details-footer too much */
   }
 
   .hero-text-logo-img {
-    max-width: clamp(300px, 50vw, 600px); /* Slightly reduced max for balance */
-    width: 70%; /* Adjusted width */
+    max-width: clamp(300px, 50vw, 600px);
+    width: 70%;
     height: auto;
-    margin-bottom: clamp(15px, 3vh, 30px);
+    margin-bottom: clamp(40px, 8vh, 80px);
   }
 
   .release-date-text {
-    font-size: clamp(2.2rem, 6vw, 4.5rem); /* Slightly adjusted */
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
     font-weight: bold;
     background: linear-gradient(90deg, var(--gta-orange), var(--gta-pink), var(--gta-purple));
     -webkit-background-clip: text;
@@ -344,43 +702,36 @@
   .countdown-timer {
     display: flex;
     justify-content: center;
-    gap: clamp(10px, 2vw, 15px); /* Slightly reduced gap */
-    margin-bottom: clamp(20px, 4vh, 40px);
+    gap: clamp(10px, 2vw, 15px);
+    margin-top: clamp(20px, 4vh, 40px);
     flex-wrap: wrap;
   }
 
   .countdown-timer div {
-    background-color: rgba(20,20,20,0.8); /* Darker, more opaque */
+    background-color: rgba(20,20,20,0.8);
     padding: clamp(10px, 1.5vw, 15px) clamp(15px, 2.5vw, 25px);
     border-radius: 8px;
-    /* min-width: clamp(70px, 15vw, 110px); */ /* Let content define width more */
+    min-width: clamp(70px, 15vw, 110px);
     text-align: center;
-    border: 1px solid rgba(100,100,100,0.2); /* Restored subtle border */
+    border: 1px solid rgba(100,100,100,0.2);
   }
 
   .countdown-timer span {
     display: block;
-    font-size: clamp(1.5rem, 3.5vw, 2.5rem); /* Adjusted size */
+    font-size: clamp(1.5rem, 3.5vw, 2.5rem);
     font-weight: bold;
     color: var(--text-color);
     line-height: 1.1;
   }
-  .countdown-timer div > span + span { /* This targets the unit text */
-    font-size: clamp(0.7rem, 1.2vw, 0.9rem); /* Smaller unit text */
-    color: #aaa;
-    margin-top: 4px;
-    font-weight: normal;
-  }
+
 
   .hero-details-footer {
-    position: relative; /* Will be part of the flex flow of hero-section */
-    z-index: 2; /* Same level as overlay content, appears below it in flow */
+    position: absolute;
+    top: clamp(20px, 4vh, 40px);
+    right: clamp(20px, 4vw, 40px);
+    z-index: 2;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    width: 100%;
-    padding: clamp(10px, 2vh, 20px) var(--container-padding) clamp(30px, 5vh, 60px) var(--container-padding); /* Padding around logos/notice */
-    box-sizing: border-box;
   }
 
   .platform-logo-container {
@@ -388,35 +739,36 @@
     justify-content: center;
     align-items: center;
     gap: 25px; 
-    margin-bottom: clamp(10px, 2vh, 15px); /* Space between logos and notice */
+    margin-bottom: clamp(10px, 2vh, 15px);  
   }
 
   .platform-logo {
     display: flex;
     align-items: center;
-    /* background-color: rgba(30,30,30,0.5); Removed bg, rely on SVG */
-    /* padding: 8px 15px; Adjusted padding for icon+text */
-    /* border-radius: 6px; */
     color: #ccc;
   }
 
   .platform-logo :global(svg.platform-svg-icon) {
-    height: clamp(18px, 2.5vh, 22px); /* Adjust SVG size */
+    height: clamp(24px, 3vh, 28px); 
     width: auto;
-    margin-right: 8px;
-    fill: currentColor; /* Ensure SVG picks up text color */
+    fill: currentColor;
   }
-  .platform-name {
-    font-size: clamp(0.8rem, 1.5vw, 1.1rem);
-    font-weight: 500;
-  }
-
-  /* Removed .platform-icon and specific platform bg colors as SVGs are used now */
 
   .release-notice {
-    font-size: clamp(0.6rem, 1vw, 0.8rem);
-    color: #777; 
-    margin-top: 0; 
+    font-size: clamp(1.2rem, 2vw, 1.6rem);
+    color: #fff;
+    position: absolute;
+    top: calc(50% + 80px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    white-space: nowrap;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    background: linear-gradient(90deg, var(--gta-orange), var(--gta-pink), var(--gta-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
   }
 
   .scroll-indicator {
@@ -440,10 +792,25 @@
     }
   }
 
-  /* Bento Grid Section Styles */
   .bento-section {
     padding: clamp(30px, 5vw, 60px) var(--container-padding);
-    background-color: #101010; /* Slightly different bg for contrast or same as body */
+    background-color: #101010;
+  }
+
+  .bento-section h2.character-section-title {
+    font-size: clamp(1.5rem, 3vw, 2.5rem);
+    color: #fff;
+    margin: clamp(40px, 6vh, 80px) 0 clamp(20px, 3vh, 40px);
+    text-align: center;
+    background: linear-gradient(90deg, var(--gta-orange), var(--gta-pink), var(--gta-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: bold;
+  }
+
+  .bento-section h2.character-section-title:first-of-type {
+    margin-top: 0;
   }
 
   .bento-title {
@@ -456,17 +823,14 @@
 
   .bento-grid {
     display: grid;
-    grid-template-columns: repeat(1, 1fr); /* Mobile first: 1 column */
+    grid-template-columns: repeat(1, 1fr);
     gap: var(--bento-gap);
-    max-width: 1200px; /* Max width for the grid */
+    max-width: 1200px;
     margin: 0 auto;
   }
-
-  /* Tablet and Desktop: 3 columns */
   @media (min-width: 768px) {
     .bento-grid {
       grid-template-columns: repeat(3, 1fr);
-      /* Define a base row height, items can span multiple of these */
       grid-auto-rows: minmax(250px, auto); 
     }
   }
@@ -475,7 +839,7 @@
     background-color: #1a1a1a;
     border-radius: 12px;
     overflow: hidden;
-    display: flex; /* For centering content or specific layouts within item */
+    display: flex;
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border: 1px solid rgba(255,255,255,0.05);
@@ -492,39 +856,62 @@
     flex-direction: column;
   }
   
-  .item-type-trailer .bento-content {
-    padding: 1rem;
-    justify-content: space-between;
-  }
-  .item-type-trailer h3 {
-      margin: 0 0 0.5rem 0;
-      font-size: 1.2rem;
-      color: var(--gta-pink);
-  }
-
-  .video-wrapper-bento {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background-color: #000;
-    flex-grow: 1;
-  }
-  .video-wrapper-bento > :global(iframe) {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px; /* Rounded corners for the iframe itself if possible */
-  }
 
   .character-content {
     background-size: cover;
     background-position: center;
     position: relative;
-    justify-content: flex-end; /* Align text to bottom */
-    min-height: 250px; /* Ensure a minimum height */
+    min-height: clamp(250px, 30vh, 400px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+  }
+
+  .image-button,
+  .character-button {
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 100%;
+    height: 100%;
+    display: block;
+    transition: transform 0.2s ease;
+  }
+
+  .image-button:hover,
+  .character-button:hover {
+    transform: scale(1.02);
+  }
+
+  .image-button:focus,
+  .character-button:focus {
+    outline: 2px solid var(--gta-pink);
+    outline-offset: 2px;
+  }
+
+  .character-content:hover {
+    transform: scale(1.02);
+  }
+
+  .character-content::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 70%;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    z-index: 1;
   }
 
   .character-overlay {
-    background: linear-gradient(to top, rgba(0,0,0,0.8) 20%, rgba(0,0,0,0) 80%);
-    padding: 1rem;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    color: white;
+    z-index: 2;
     color: #fff;
   }
   .character-overlay h4 {
@@ -538,9 +925,6 @@
     color: #ccc;
   }
 
-  .image-content {
-    /* Images will fill this, handled by .bento-img */
-  }
   .bento-img {
     width: 100%;
     height: 100%;
@@ -559,23 +943,53 @@
 
 
   /* Footer Styles */
-  footer {
-    text-align: center;
-    padding: 30px var(--container-padding);
-    background-color: #050505;
-    font-size: clamp(0.8rem, 1.5vw, 0.9rem);
-    color: #777;
-    border-top: 1px solid rgba(255,255,255,0.05);
+  .footer-character-container {
+    position: relative;
+    height: 400px;
+    margin-top: -200px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    pointer-events: none;
+    padding-right: 0%;
   }
 
-  footer p {
-    margin: 5px 0;
+  .footer-character-image {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.15));
+  }
+
+  footer {
+    position: relative;
+    text-align: center;
+    padding: 2rem;
+    background-color: rgba(0, 0, 0, 0.8);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-content {
+    position: relative;
+    z-index: 2;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
+    padding: 1rem;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .footer-text {
+    color: #ccc;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
   }
 
   footer a {
-    color: var(--gta-pink); 
+    color: var(--gta-pink);
     text-decoration: none;
   }
+
   footer a:hover {
     text-decoration: underline;
   }
